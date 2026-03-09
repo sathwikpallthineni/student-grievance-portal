@@ -1,0 +1,239 @@
+<% layout("./layouts/authority_boilerplate.ejs") %>
+<body class="authority-view">
+    <div class="view-header">
+        <div class="go-back">
+            <a href="/authority"> < &nbsp;Back to My Grievances</a>
+        </div>
+        <div class="view-title">
+            <h1><%= grievance.title %></h1>
+        </div>
+        <div class="view-category">
+            <b><%= grievance.category %></b>
+        </div>
+    </div>
+    <hr>
+    <div class="view-section">
+        <div class="view-info">
+            <div class="viewgrievance-info">
+                <div class="view-raisedby">
+                    <p>Raised by: <b><%= grievance.raised_By %></b></p>
+                </div>
+                <div class="view-submitted">
+                    <p>Submitted: <b><%= grievance.createdAt.toLocaleDateString("en-IN") %></b></p>
+                </div>
+                <div class="view-currentstatus">
+                   <div class="status-info">
+                        <% if(grievance.status === "Submitted") {%>
+                        <b class="gray"><%= grievance.status %></b>
+                        <%}%>
+                        <% if(grievance.status === "Under Review") {%>
+                        <b class="orange"><%= grievance.status %></b>
+                        <%}%>
+                        <% if(grievance.status === "In Progress") {%>
+                        <b class="blue"><%= grievance.status %></b>
+                        <%}%>
+                        <% if(grievance.status === "Resolved") {%>
+                        <b class="green"><%= grievance.status %></b>
+                        <%}%>
+                      </div>
+                </div>
+            </div>
+            <div class="grievance-details">
+                <div class="grievance-details-heading">
+                    <h3>Grievance Details</h3>
+                </div>
+                <hr>
+                <div class="grievance-details-category">
+                    <p>Category: &nbsp; <p class="inline-block"><%= grievance.category %></p></p><br>
+                    <p>Submitted: &nbsp; <p class="inline-block"> <%= grievance.createdAt.toLocaleDateString("en-IN") %>, <%= grievance.createdAt.toLocaleTimeString("en-IN") %></p> </p>
+                </div>
+                <hr>
+                <div class="grievance-details-description">
+                    <h4>Description</h4>
+                    <p><%= grievance.description %></p>
+                </div>
+                <hr>
+                <div class="grievance-details-attachments">
+                    <h4>Attachments</h4>
+                    <img src="<%= grievance.file_Url %>" alt="image" >
+                </div>
+            </div>
+            <div class="raisedby">
+                <h4>Raised By</h4>
+                <div class="raisedby-info">
+                    <div class="profile-pic">
+                        <i class="fa-regular fa-user"></i>
+                    </div>
+                    <div class="name-email">
+                        <div class="name"><%= grievance.raised_By %></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="view-status">
+            <% if(grievance.status != "Resolved") {%>
+        <div class="action-panel">
+  <h3>Actions</h3>
+
+  <div class="status-summary 
+    <%= grievance.slaStatus 
+        ? 'on-track'
+        : Date.now() > grievance.duedate 
+        ? 'breached'
+        : Date.now() > grievance.duedate - (24*60*60*1000) 
+        ? 'at-risk' 
+        : 'on-track' %>">
+
+    <span class="status-dot"></span>
+
+    <div>
+      <div class="status-text"><%= grievance.status %></div>
+
+      <div class="sla-text">
+        <% if (grievance.slaStatus) { %>
+          <div class="sla-block sla-ontrack"><%= grievance.slaStatus %></div>
+        <% } %>
+
+        <% if (!grievance.slaStatus && Date.now() < grievance.duedate-(24*60*60*1000)) { %>
+          ⏱ <span class="on-track">
+            <% let hours = Math.floor((grievance.duedate - Date.now())/(60*60*1000)) %>
+            <%= hours %> Hours left · On Track
+          </span>
+        <% } %>
+
+        <% if (!grievance.slaStatus && Date.now() < grievance.duedate && Date.now() > grievance.duedate-(24*60*60*1000)) { %>
+          ⏱ <span class="at-risk">
+            <% let hours = Math.floor((grievance.duedate - Date.now())/(60*60*1000)) %>
+            <%= hours %> Hours left · At Risk
+          </span>
+        <% } %>
+
+        <% if (!grievance.slaStatus && Date.now() > grievance.duedate) { %>
+          ⏱ <span class="breached">
+            <% let hours = Math.floor((grievance.duedate - Date.now())/(60*60*1000)) %>
+            Overdue by <%= Math.abs(hours) %> Hours · Breached
+          </span>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+  <label class="note-label">Add Internal Note (optional)</label>
+  <textarea
+    class="internal-note"
+    placeholder="Add a note for internal reference..."
+    maxlength="500"
+  ></textarea>
+  <div class="char-count">0 / 500</div>
+
+  <% if (grievance.status === "Under Review") { %>
+      <button id="MarkProgress/<%= grievance.id %>" class="blue authority-action">✓ Mark as In Progress</button>
+  <% } %>
+
+  <% if (grievance.status === "In Progress") { %>
+      <button id="MarkResolved/<%= grievance.id %>" class="green authority-action">✓ Mark as Resolved</button>
+  <% } %>
+ 
+<div class="authorityaction-overlay"></div>
+    <div class="authorityaction-warning">
+    <div class="authorityaction-header">
+        <h3>Confirm Status Change</h3>
+        <div class="authorityaction-cancelbtn">
+            <i class="fa-solid fa-xmark"></i>
+        </div>
+    </div>
+
+    <p class="authorityaction-text">
+        Once it's marked<strong class="status-text"></strong>, this cannot be reversed.
+    </p>
+
+    <form class="authorityaction-form" method="post">
+        <button class="authorityaction-button"></button>
+    </form>
+</div>
+
+  <div class="action-hint">
+    <strong>Next Action:</strong>
+    Investigate the issue and update the grievance status.
+    <br />
+    <small>Updating status will notify the user by email.</small>
+  </div>
+</div>
+<%}%>
+<% if(grievance.status === "Resolved") {%>
+<div class="card">
+    <h2 class="section-title">Resolution Summary</h2>
+
+    <!-- Status -->
+    <div class="status">
+      <div class="status-icon">✓</div>
+      <div class="status-content">
+        <div class="status-label">Resolved</div>
+        <div class="status-meta">
+          <span>Resolved on:<%= new Date(grievance.history[3].time).toLocaleString("en-IN") %></span>
+          <span class="dot">•</span>
+          <span>
+            Resolved by:
+            <img class="avatar" src="https://i.pravatar.cc/24" alt="avatar" />
+            <%= grievance.assigned_To %>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resolution Note -->
+    <div class="block">
+      <h3>Resolution Note</h3>
+      <p class="note">
+        Leakage fixed by replacing pipe joint.<br />
+        Area cleaned and tested.
+      </p>
+    </div>
+
+    <!-- SLA -->
+    <div class="block">
+      <h3>SLA Outcome</h3>
+      <div class="sla">
+        <span class="sla-icon">✓</span>
+        <div class="authoritypage">
+            <% let timetaken = Math.floor((new Date(grievance.history[3].time).getTime() - new Date(grievance.history[1].time).getTime())/(60*60*1000)) %>
+            <% targettime = Math.floor((grievance.duedate - grievance.createdAt)/(60*60*1000)) %>
+        <% if(grievance.duedate > grievance.history[3].time) {%>
+          <div class="sla-status">Resolved within SLA</div>
+          <div class="sla-time">Time Taken: <%= timetaken %> hours</div>
+        <%}%>
+        <% if(grievance.duedate < grievance.history[3].time) {%>
+          <div class="sla-statusred">⛔ SLA breached</div>
+          <div class="sla-time">Time Taken: <%= timetaken %> hours</div>
+          <div class="sla-time">SLA Target: <%= targettime %> hours <span>(+<%= timetaken-targettime %>hrs)</span></div>
+        <%}%>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="actions">
+      <button class="primary">Download Report</button>
+    </div>
+  </div>
+<%}%>
+
+            <div class="view-history">
+                <h4>Grievance History</h4>
+                <% for(let i=grievanceHistories.length-1;i>=0;i--){ %>
+                    <div class="view-history-status">
+                        <p class="status"><%= grievanceHistories[i].status %></p>
+                        <% if(i === 0) {%>
+                            <p>Created by <%= grievance.raised_By %></p>
+                            <p><%= grievanceHistories[i].time.toLocaleString("en-IN")%></p>
+                        <%}%>
+                        <% if(i != 0) {%>
+                            <p>Marked by <%= grievance.assigned_To %></p>
+                            <p><%= grievanceHistories[i].time.toLocaleString("en-IN") %></p>
+                        <%}%>
+                    </div>
+                <%}%>
+            </div>
+        </div>
+    </div>
+</body>

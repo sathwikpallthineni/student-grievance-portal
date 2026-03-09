@@ -1,0 +1,40 @@
+<% layout("./layouts/admin_boilerplate.ejs") %>
+
+<body>
+<a href="/admin/authority" class="goback-authority"> < Go Back</a>
+  <div class="page-wrapper">
+    <h1>Create Authority</h1>
+
+    <div class="form-card">
+      <form method="post" action="/admin">
+        <div class="form-group">
+          <label>Authority Name</label>
+          <input type="text" name="authorityname" placeholder="Enter authority name" required/>
+        </div>
+        <div class="form-group">
+          <label>Authority Email</label>
+          <input type="text" name="authorityemail" placeholder="Enter authority email" required/>
+        </div>
+
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" name="password" placeholder="Enter password" required/>
+        </div>
+
+        <div class="form-group">
+          <label>Status</label>
+          <select name="status">
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
+          </select>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn-primary" type="submit">Create</button>
+          <a href="/admin/authority"><button class="btn-secondary" type="button">Cancel</button></a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</body>

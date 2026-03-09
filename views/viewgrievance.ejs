@@ -1,0 +1,224 @@
+<% layout("./layouts/boilerpalte.ejs") %>
+<body>
+    <div class="view-header">
+        <div class="go-back">
+            <a href="/user"> < &nbsp;Back to My Grievances</a>
+        </div>
+        <div class="view-title">
+            <h1><%= grievance.title %></h1>
+        </div>
+        <div class="view-category">
+            <b><%= grievance.category %></b>
+        </div>
+    </div>
+    <hr>
+    <div class="view-section">
+        <div class="view-info">
+            <div class="viewgrievance-info">
+                <div class="view-raisedby">
+                    <p>Raised by: <b><%= grievance.raised_By %></b></p>
+                </div>
+                <div class="view-submitted">
+                    <p>Submitted: <b><%= grievance.createdAt.toLocaleDateString("en-IN") %></b></p>
+                </div>
+                <div class="view-currentstatus">
+                    <div class="status-info">
+                        <% if(grievance.status === "Submitted") {%>
+                        <b class="gray"><%= grievance.status %></b>
+                        <%}%>
+                        <% if(grievance.status === "Under Review") {%>
+                        <b class="orange"><%= grievance.status %></b>
+                        <%}%>
+                        <% if(grievance.status === "In Progress") {%>
+                        <b class="blue"><%= grievance.status %></b>
+                        <%}%>
+                        <% if(grievance.status === "Resolved") {%>
+                        <b class="green"><%= grievance.status %></b>
+                        <%}%>
+                      </div>
+                </div>
+            </div>
+            <div class="grievance-details">
+                <div class="grievance-details-heading">
+                    <h4>Grievance Details</h4>
+                </div>
+                <hr>
+                <div class="grievance-details-category">
+                    <p>Category: &nbsp; <p class="inline-block"><%= grievance.category %></p></p><br>
+                    <p>Submitted: &nbsp; <p class="inline-block"> <%= grievance.createdAt.toLocaleString("en-IN") %></p> </p>
+                </div>
+                <hr>
+                <div class="grievance-details-description">
+                    <h4>Description</h4>
+                    <p><%= grievance.description %></p>
+                </div>
+                <hr>
+                <div class="grievance-details-attachments">
+                    <h4>Attachments</h4>
+                    <img src="<%= grievance.file_Url %>" alt="image" >
+                </div>
+            </div>
+        </div>
+        <div class="view-status">
+            <div class="status-timeline">
+
+  <div class="status-item submitted <%= grievanceHistories[0] ? 'active' : '' %>">
+    Submitted
+    <% if (grievanceHistories[0] && grievanceHistories[0].time ) { %>
+
+      <div class="time"><%= grievanceHistories[0].time.toLocaleString("en-IN") %></div>
+
+      <% if(grievanceHistories[1]) {%>
+        <%let time =(grievanceHistories[1].time.getTime() - grievanceHistories[0].time.getTime()) %>
+      <div class="time">Duration:
+        <% if(Math.floor(time/(24*60*60*1000)) === 0 && Math.floor(time/(60*60*1000)) === 0)  {%>
+            <%=Math.floor(time/(60*1000))%> mins 
+        <%}%>
+        <% if(Math.floor(time/(24*60*60*1000)) === 0 && Math.floor(time/(60*60*1000)) >= 1) {%>
+            <%=Math.floor(time/(60*60*1000))%> Hours
+        <%}%>
+        <% if(Math.floor(time/(24*60*60*1000)) >= 1) {%>
+            <%=Math.floor(time/(24*60*60*1000))%> Days
+        <%}%>
+      </div>
+       <%}%>
+
+       <% if(!grievanceHistories[1]) {%>
+        <%let time = Math.floor((Date.now() - grievanceHistories[0].time.getTime())) %>
+      <div class="time">Ongoing:
+        <% if(Math.floor(time/(24*60*60*1000)) === 0 && Math.floor(time/(60*60*1000)) === 0)  {%>
+            <%=Math.floor(time/(60*1000))%> mins 
+        <%}%>
+        <% if(Math.floor(time/(24*60*60*1000)) === 0 && Math.floor(time/(60*60*1000)) >= 1) {%>
+            <%=Math.floor(time/(60*60*1000))%> Hours
+        <%}%>
+        <% if(Math.floor(time/(24*60*60*1000)) >= 1) {%>
+            <%=Math.floor(time/(24*60*60*1000))%> Days
+        <%}%>
+        </div>
+       <%}%>
+    <% } %>
+  </div>
+
+  <div class="status-item underreview <%= grievanceHistories[1] ? 'active' : '' %>">
+    Under Review
+    <% if (grievanceHistories[1]) { %>
+      <div class="time"><%= grievanceHistories[1].time.toLocaleString("en-IN") %></div>
+      <% if(grievanceHistories[2]) {%>
+        <%let time =  Math.floor((grievanceHistories[2].time.getTime() - grievanceHistories[1].time.getTime())) %>
+      <div class="time">Duration:
+        <% if(Math.floor(time/(24*60*60*1000)) === 0 && Math.floor(time/(60*60*1000)) === 0)  {%>
+            <%=Math.floor(time/(60*1000))%> mins 
+        <%}%>
+        <% if(Math.floor(time/(24*60*60*1000)) === 0 && Math.floor(time/(60*60*1000)) >= 1) {%>
+            <%=Math.floor(time/(60*60*1000))%> Hours
+        <%}%>
+        <% if(Math.floor(time/(24*60*60*1000)) >= 1) {%>
+            <%=Math.floor(time/(24*60*60*1000))%> Days
+        <%}%>
+        </div>
+       <%}%>
+       <% if(!grievanceHistories[2]) {%>
+      <div class="time">
+        <% let time = Math.floor((Date.now() - grievanceHistories[1].time.getTime())) %>
+        Ongoing :
+        <% if(Math.floor(time/(24*60*60*1000)) === 0 && Math.floor(time/(60*60*1000)) === 0)  {%>
+            <%=Math.floor(time/(60*1000))%> mins 
+        <%}%>
+        <% if(Math.floor(time/(24*60*60*1000)) === 0 && Math.floor(time/(60*60*1000)) >= 1) {%>
+            <%=Math.floor(time/(60*60*1000))%> Hours
+        <%}%>
+        <% if(Math.floor(time/(24*60*60*1000)) >= 1) {%>
+            <%=Math.floor(time/(24*60*60*1000))%> Days
+        <%}%>
+        </div>
+       <%}%>
+    <% } %>
+  </div>
+
+  <div class="status-item inprogress <%= grievanceHistories[2] ? 'active' : '' %>">
+    In Progress
+    <% if (grievanceHistories[2]) { %>
+      <div class="time"><%= grievanceHistories[2].time.toLocaleString("en-IN") %></div>
+      <% if(grievanceHistories[3]) {%>
+        <% let time = Math.floor((grievanceHistories[3].time.getTime() - grievanceHistories[2].time.getTime())) %>
+      <div class="time">Duration:
+
+        <% if(Math.floor(time/(24*60*60*1000)) === 0 && Math.floor(time/(60*60*1000)) === 0)  {%>
+            <%=Math.floor(time/(60*1000))%> mins 
+        <%}%>
+        <% if(Math.floor(time/(24*60*60*1000)) === 0 && Math.floor(time/(60*60*1000)) >= 1) {%>
+            <%=Math.floor(time/(60*60*1000))%> Hours
+        <%}%>
+        <% if(Math.floor(time/(24*60*60*1000)) >= 1) {%>
+            <%=Math.floor(time/(24*60*60*1000))%> Days
+        <%}%>
+        
+      </div>
+       <%}%>
+       <% if(!grievanceHistories[3]) {%>
+        <%let time = Math.floor((Date.now() - grievanceHistories[2].time.getTime())) %>
+      <div class="time">Ongoing:
+
+        <% if(Math.floor(time/(24*60*60*1000)) === 0 && Math.floor(time/(60*60*1000)) === 0)  {%>
+            <%=Math.floor(time/(60*1000))%> mins 
+        <%}%>
+        <% if(Math.floor(time/(24*60*60*1000)) === 0 && Math.floor(time/(60*60*1000)) >= 1) {%>
+            <%=Math.floor(time/(60*60*1000))%> Hours
+        <%}%>
+        <% if(Math.floor(time/(24*60*60*1000)) >= 1) {%>
+            <%=Math.floor(time/(24*60*60*1000))%> Days
+        <%}%>
+
+      </div>
+       <%}%>
+    <% } %>
+  </div>
+
+  <div class="status-item resolved <%= grievanceHistories[3] ? 'active' : '' %>">
+    Resolved
+    <% if (grievanceHistories[3]) { %>
+      <div class="time"><%= grievanceHistories[3].time.toLocaleString("en-IN") %></div>
+    <% } %>
+  </div>
+
+</div>
+
+            <div class="view-history">
+                <h4>Grievance History</h4>
+                <% for(let i=grievanceHistories.length-1;i>=0;i--){ %>
+                    <div class="view-history-status">
+                        <p class="status"><%= grievanceHistories[i].status %></p>
+
+                        <% if(i === 0) {%>
+                            <p>Created by <%= grievance.raised_By %></p>
+                            <p><%= grievanceHistories[i].time.toLocaleString("en-IN")%></p>
+                        <%}%>
+                        <% if(i != 0) {%>
+                            <p>Marked by <%= grievance.assigned_To %></p>
+                            <p><%= grievanceHistories[i].time.toLocaleString("en-IN") %></p>
+                        <%}%>
+
+                        <% if(grievanceHistories[i+1]) {%>
+        <% let time = Math.floor((grievanceHistories[i+1].time.getTime() - grievanceHistories[i].time.getTime())) %>
+      <!-- <div class="time">Duration: -->
+
+        <% if(Math.floor(time/(24*60*60*1000)) === 0 && Math.floor(time/(60*60*1000)) === 0)  {%>
+            <p>Duration: <%=Math.floor(time/(60*1000))%> mins</p>
+        <%}%>
+        <% if(Math.floor(time/(24*60*60*1000)) === 0 && Math.floor(time/(60*60*1000)) >= 1) {%>
+            <p>Duration: <%=Math.floor(time/(60*60*1000))%> Hours</p>
+        <%}%>
+        <% if(Math.floor(time/(24*60*60*1000)) >= 1) {%>
+            <p>Duration: <%=Math.floor(time/(24*60*60*1000))%> Days</p>
+        <%}%>
+        
+      <!-- </div> -->
+       <%}%>
+
+                    </div>
+                <%}%>
+            </div>
+        </div>
+    </div>
+</body>

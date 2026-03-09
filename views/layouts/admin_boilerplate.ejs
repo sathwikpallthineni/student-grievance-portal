@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Layout</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  </head>
+ <body>
+    <div class="main">
+  <header class="navbar">
+
+  <div class="nav-right">
+    <div class="admin-profile">
+        <div class="username">
+        <% if(user) {%>
+            <h3><%=user.username%></h3>
+        <% } %>
+        </div>
+
+        <div class="profile-pic">
+            <i class="fa-regular fa-user"></i>
+        </div>
+    </div>
+        
+         <div class="logout-admin">
+            <a class="logout-icon"><i class="fa-solid fa-right-from-bracket"></i></a>
+          </div>
+  </div>
+
+  <div class="logout-overlay"></div>
+    <div class="logout-warning">
+    <div class="logout-header">
+        <h3>Confirm Logout</h3>
+        <div class="logout-cancelbtn">
+            <i class="fa-solid fa-xmark"></i>
+        </div>
+    </div>
+
+    <p class="logout-text">
+        Are you sure you want to log out of your account?
+    </p>
+
+    <form class="logout-form" method="post" action="/user/logout">
+        <button class="logout-button">Logout</button>
+    </form>
+</div>
+</header>
+
+<!-- SIDEBAR (BELOW NAVBAR) -->
+<aside class="sidebar">
+  <div class="sidebar-logo">▮▮▮</div>
+  <ul class="menu">
+    <li class="items"><a href="/admin">Dashboard</a></li>
+    <li  class="items"><a href="/admin/reassign">Action Required</a></li>
+    <li  class="items" id="allgrievances"><a href="/admin/grievances">Grievances</a></li>
+    <li  class="items"><a href="/admin/assign">Assignments</a></li>
+    <li  class="items"><a href="/admin/authority">Authorities</a></li>
+    <li  class="items"><a href="/admin/users">Users</a></li>
+  </ul>
+</aside>
+<% if(success && success.length>0) {%>
+        <div class="alert alert-success" role="alert">
+           <%= success %>
+        </div>
+        <%}%>
+        <% if(failure && failure.length>0) {%>
+            <div class="alert alert-danger" role="alert">
+                <%= failure %>
+            </div>
+        <% } %>
+<div class="content">
+<%- body %>
+</div>
+</div>
+<script src="/script.js"></script>
+</body>
+</html>

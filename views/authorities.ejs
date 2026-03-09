@@ -1,0 +1,41 @@
+<% layout("./layouts/admin_boilerplate.ejs") %>
+<body>
+    
+    <div class="authority-header">
+        <div><h1>Authority Management</h1></div>
+        <div class="create-authority"><a href="/admin/newAuhtority">+ Create Authority </a></div>
+    </div>
+
+<div class="authorities-table">
+    <div>
+     <table>
+         
+     </table>
+     
+     <div class="btn-container">
+        
+     </div>
+    </div>
+</div>
+<!-- Block Confirmation Overlay -->
+<div class="confirm-overlay" id="blockConfirm">
+    <div class="confirmoverlay-cancelbtn">
+            <i class="fa-solid fa-xmark"></i>
+    </div>
+  <div class="confirm-box">
+    <h3>Disable Authority</h3>
+    <p class="warning-text">
+      
+    </p>
+
+    <div class="confirm-actions">
+      <form class="block-form" method="post">
+      <!-- <button class="cancel-block-btn" id="cancelBlock">Cancel</button> -->
+      <button class="danger-btn" id="confirmBlock"></button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- <script src="/script.js"></script> -->
+</body>

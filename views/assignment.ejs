@@ -1,0 +1,79 @@
+<% layout("./layouts/admin_boilerplate.ejs") %>
+<body>
+  <div class="unassigned-header">
+    <h1>Unassigned Grievances</h1>
+  </div>
+    <div class="assignment-table">
+    <div>
+        <table>
+            
+        </table>
+        <div class="btn-container"></div>
+    </div>
+    </div>
+
+    <div class="assignment-overlay"></div>
+    <div class="overlay" id="assignOverlay">
+  <h1>Assign Authority</h1>
+  <div class="cancel-btn"><i class="fa-solid fa-xmark"></i></i></div>
+  <div class="overlay-content">
+    <p class="text">Select an authority to assign this grievance</p>
+
+    <form class="form" method="post">
+      <div class="authority-list">
+        <% for (let authority of authorities) { %>
+
+          <% let authgrievances = authority.grievances;
+          let assignedlength = 0;%>
+          <%for(authgrievance of authgrievances) {%>
+            <%if(authgrievance.status != "Resolved") {%>
+              <%assignedlength++%>
+           <%}%>
+         <%}%>
+
+          <% if(assignedlength >= 10) {%>
+            <div class="radio-group">
+            <label class="radio">
+              <input
+                type="radio"
+                name="authority"
+                class="Disabled-radio"
+                value="<%= authority.username %>"
+                disabled
+              />
+              <span class="authorityName">
+                <p><%= authority.username %></p>
+                <p class="assigned-grievancesLength"> - <%= assignedlength %>/ 10 Active</p>
+                <p> FULL</p>
+              </span>
+            </label>
+           </div>
+          <%}%>
+          <% if(assignedlength < 10) {%>
+          <div class="radio-group">
+            <label class="radio">
+              <input
+                type="radio"
+                name="authority"
+                
+                value="<%= authority.username %>"
+              />
+              <span class="authorityName">
+                <p><%= authority.username %></p>
+                <p class="assigned-grievancesLength"> - <%= assignedlength %>/ 10 Active</p>
+              </span>
+            </label>
+          </div>
+          <%}%>
+        <% } %>
+      </div>
+
+      <div class="btns">
+        <button type="submit" class="Assign-btn">Assign</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+</body>

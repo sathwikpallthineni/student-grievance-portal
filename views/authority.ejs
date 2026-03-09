@@ -1,0 +1,150 @@
+<% layout("./layouts/authority_boilerplate.ejs") %>
+
+<body class="authority-home">
+  <% if(authority.status === "Blocked") {%>
+    <div class="blocked-banner">
+        <strong><i class="fa-solid fa-triangle-exclamation"></i> Account Restricted</strong>
+        <p>
+Your authority access has been restricted. All previously assigned grievances have been unassigned from your account. You no longer have permission to manage grievances. Please contact the system administrator for assistance.
+        </p>
+   </div>
+    <%}%>
+  <!-- STATUS SUMMARY (NOT CLICKABLE) -->
+  <div class="summary">
+    <div class="box gray">
+      <% let underreview=0 %>
+      <%for(grievance of datas) {%>
+        <% if(grievance.status === "Under Review") {%>
+          <%underreview++%>
+        <%}%>
+      <%}%>
+      <p>Under Review</p>
+      <h3><%= underreview %></h3>
+    </div>
+    <div class="box blue">
+      <% let inprogress=0 %>
+      <%for(grievance of datas) {%>
+        <% if(grievance.status === "In Progress") {%>
+          <%inprogress++%>
+        <%}%>
+      <%}%>
+      <p>In Progress</p>
+      <h3><%= inprogress %></h3>
+    </div>
+    <div class="box orange">
+      <% let atrisk=0 %>
+      <%for(grievance of datas) {%>
+        <% if(grievance.status != "Resolved" && Date.now() < grievance.duedate && Date.now() > grievance.duedate - (24*60*60*1000)) {%>
+          <%atrisk++%>
+        <%}%>
+      <%}%>
+      <p>At Risk</p>
+      <h3><%= atrisk %></h3>
+    </div>
+    <div class="box red">
+      <% let breached=0 %>
+      <%for(grievance of datas) {%>
+        <% if(grievance.status != "Resolved" && Date.now() > grievance.duedate) {%>
+          <%breached++%>
+        <%}%>
+      <%}%>
+      <p>Breached</p>
+      <h3><%=breached%></h3>
+    </div>
+  </div>
+
+  <!-- FILTER BAR (CLICKABLE) -->
+  <div class="filters">
+    <a href="/authority/?filter=All">All</a>
+    <a href="/authority/?filter=currentBreached">⚠️ Currently Breached</a>
+    <a href="/authority/?filter=At Risk">At Risk</a>
+        <a href="/authority/?filter=Under Review">Under Review </a>
+    <a href="/authority/?filter=In Progress">In Progress</a>
+    <a href="/authority/?filter=ResolvedWithin">Resolved Within SLA</a>
+    <a href="/authority/?filter=ResolvedAfter">Resolved After SLA Breach</a>
+  </div>
+
+  
+    <div class="grievances-list">
+      <% if(grievances.length>0) {%>
+        <% for(grievance of grievances) {%>
+            <div class="grievance">
+            <a href="/authority/<%= grievance.id %>" style="text-decoration: none; color: black;">
+            <div class="secondary-grievance">
+                <div class="top-info">
+                    <div class="leftside-info">
+                        <div class="title-info">
+                            <h4><%= grievance.title %></h4>
+                        </div>
+                        <div class="category-info">
+                            <b><%= grievance.category %></b>
+                        </div> 
+                    </div>
+                    <div class="rightside-info">
+                      <div class="status-info">
+                        <% if(grievance.status === "Submitted") {%>
+                        <b class="gray"><%= grievance.status %></b>
+                        <%}%>
+                        <% if(grievance.status === "Under Review") {%>
+                        <b class="orange"><%= grievance.status %></b>
+                        <%}%>
+                        <% if(grievance.status === "In Progress") {%>
+                        <b class="blue"><%= grievance.status %></b>
+                        <%}%>
+                        <% if(grievance.status === "Resolved") {%>
+                        <b class="green"><%= grievance.status %></b>
+                        <%}%>
+                      </div>
+                      <div class="slastatus-info">
+                        <% if(grievance.slaStatus === "On Track") {%>
+                            <div class="sla-block sla-ontrack"><i class="fa-regular fa-circle-check"></i><%= grievance.slaStatus %></div>
+                        <%}%>
+                        <% if(grievance.slaStatus === "Breached") {%>
+                            <div class="sla-block sla-breached"><p><% let hours = Math.floor((Date.now() - grievance.duedate)/(60*60*1000)) %>Overdue by <%= hours %> Hours&nbsp;&nbsp;&nbsp;Breached</p></div>
+                        <%}%>
+                        <% if(!grievance.slaStatus && Date.now() < grievance.duedate-(24*60*60*1000)) {%>
+                            <div class="sla-block sla-ontrack"><p><% let hours = Math.floor((grievance.duedate - Date.now())/(60*60*1000)) %><%= hours %> Hours left &nbsp;&nbsp;&nbsp;<i class="fa-regular fa-circle-check"></i>On-Track</p></div>
+                        <%}%>
+                        <% if(!grievance.slaStatus && Date.now() < grievance.duedate && Date.now() > grievance.duedate-(24*60*60*1000)) {%>
+                            <div class="sla-block sla-risk"><p><% let hours = Math.floor((grievance.duedate - Date.now())/(60*60*1000) )%><%= hours %> Hours left  &nbsp;&nbsp;&nbsp;<i class="fa-solid fa-exclamation"></i>At-Risk</p></div>
+                        <%}%>
+                        <% if(!grievance.slaStatus && Date.now() > grievance.duedate) {%>
+                            <div class="sla-block sla-breached"><p><i class="fa-solid fa-triangle-exclamation"></i> <% let hours = Math.floor((Date.now() - grievance.duedate)/(60*60*1000)) %>Overdue by <%= hours %> Hours&nbsp;&nbsp;&nbsp;Breached</p></div>          
+                        <%}%>
+                      </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="middle-info"> 
+                    <p><%= grievance.description %></p>
+                </div>
+            </div>
+                <div class="bottom-info">
+                    <div class="lastupdated-info">
+                        Last Updated: 
+                        <% if( Math.floor( (Date.now() - grievance.updatedAt.getTime()) / (24*60*60*1000)) < 1 ) {%>
+                            <b> Today</b>
+                        <%}%>
+                        <% if( Math.floor( (Date.now() - grievance.updatedAt.getTime()) / (24*60*60*1000)) >= 1 ) {%>
+                            <b> <%= Math.floor( (Date.now() - grievance.updatedAt.getTime()) / (24*60*60*1000)) %> days ago</b>
+                        <%}%>
+                    </div>
+                    <div class="breakdown">
+                        |
+                    </div>
+                    <div class="assignedto-info">
+                        <p>Raised By: <b><%= grievance.raised_By %></b></p>
+                    </div>
+                </div>
+
+            </a>
+            </div>
+            
+        <%}%>
+        <%}%>
+        <% if(grievances.length === 0) {%>
+          <P class="no-grievances">No Grievances Found</P>
+        <%}%>
+    </div>
+
+</body>

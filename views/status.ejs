@@ -1,0 +1,60 @@
+<% layout("./layouts/admin_boilerplate.ejs") %>
+
+
+<body>
+    <div class="backto-dashboard">
+    <a href="/admin">< Back to Dashboard</a>
+    </div>
+    <div class="filter-table">
+        <div>
+        <table>
+            <tr>
+                <th>Grievance ID</th>
+                <th>User</th>
+                <th>Status</th>
+                <th>Assigned To</th>
+                <th>Sla Status</th>
+                <th>Created Date</th>
+            </tr>
+            <% if(grievances.length>0) {%>
+            <% for(grievance of grievances) {%>
+            <tr>
+                <td><%= grievance.id %></td>
+                <td><%= grievance.raised_By %></td>
+                <td><%= grievance.status %></td>
+                <td><%= grievance.assigned_To %></td>
+                <td>
+                <% if(grievance.slaStatus) {%>
+                    <div class="sla-badge sla-ontrack"><%= grievance.slaStatus %></div>
+                <%}%>
+                <% if(!grievance.slaStatus && Date.now() < grievance.duedate-(24*60*60*1000)) {%>
+                        <div class="sla-badge sla-ontrack">On-Track</div>
+                <%}%>
+                <% if(!grievance.slaStatus && Date.now() < grievance.duedate && Date.now() > grievance.duedate-(24*60*60*1000)) {%>
+                        <div class="sla-badge sla-risk">At-Risk</div>
+                <%}%>
+                <% if(!grievance.slaStatus && Date.now() > grievance.duedate) {%>
+                        <div class="sla-badge sla-breached">Breached</div>          
+                <%}%>
+                </td>
+                <td><%= grievance.createdAt.toLocaleDateString("en-IN") %> <%= grievance.createdAt.toLocaleTimeString("en-IN") %></td>
+            </tr>
+            <%}%>
+            <%}%>
+            <% if(grievances.length === 0) {%>
+            <tr>
+              <td>-</td>
+              <td>-</td>
+              <td>-</td>
+              <td>-</td>
+              <td>-</td>
+              <td>-</td>
+            </tr>
+            <div class="no-unassigned">
+                <p>No Grievances Present</p>
+            </div>
+            <%}%>
+        </table>
+        </div>
+    </div>
+</body>
