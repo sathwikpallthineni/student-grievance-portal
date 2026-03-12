@@ -63,6 +63,8 @@ module.exports.authorityHomePage = async(req,res,next) => {
 module.exports.authorityActions = async(req,res,next) => {
      try{
         let {action,id} = req.params;
+        // console.log(req.body);
+        let {action_note} = req.body || {};
     if(!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(400).send("INVALID Grievance ID.")
     }
@@ -83,6 +85,9 @@ module.exports.authorityActions = async(req,res,next) => {
             status:"In Progress",
             done_By:grievance.assigned_To,
         });
+
+        grievance.Notes.Progress_Note = action_note;
+
         subject = `Grievance In Progress – ID #${grievance._id}`;
          Email = `
 Your grievance is now in progress.
@@ -120,6 +125,9 @@ This is an automated message. Please do not reply.
             status:"Resolved",
             done_By:grievance.assigned_To,
         });
+
+         grievance.Notes.Resolved_Note = action_note;
+
         subject = `Grievance Resolved – ID #${grievance._id}`
         Email = `
 Your grievance has been marked as resolved.
@@ -141,6 +149,7 @@ This is an automated message. Please do not reply.
     }
 
     await grievance.save();
+    console.log(grievance);
     if(User.email){
      await transporter.sendMail({
         from: process.env.EMAIL_USER,

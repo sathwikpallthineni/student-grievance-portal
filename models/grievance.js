@@ -30,6 +30,14 @@ const grievanceschema = new mongoose.Schema({
     slaStatus:{
         type:String,
     },
+    Notes:{
+        Progress_Note:{
+            type:String,
+        },
+        Resolved_Note:{
+            type:String,
+        }
+    },
     duedate:{
         type:Number,
     },

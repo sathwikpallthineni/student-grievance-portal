@@ -155,7 +155,9 @@
         <%}%>
         
       </div>
+
        <%}%>
+
        <% if(!grievanceHistories[3]) {%>
         <%let time = Math.floor((Date.now() - grievanceHistories[2].time.getTime())) %>
       <div class="time">Ongoing:
@@ -169,9 +171,12 @@
         <% if(Math.floor(time/(24*60*60*1000)) >= 1) {%>
             <%=Math.floor(time/(24*60*60*1000))%> Days
         <%}%>
-
       </div>
+      
        <%}%>
+       <div class="time">
+        <p>Authority Note: <%= (grievance.Notes.Progress_Note ? grievance.Notes.Progress_Note:"No note provided") %></p>
+      </div>
     <% } %>
   </div>
 
@@ -179,6 +184,9 @@
     Resolved
     <% if (grievanceHistories[3]) { %>
       <div class="time"><%= grievanceHistories[3].time.toLocaleString("en-IN") %></div>
+      <div class="time">
+        <p>Authority Note: <%= (grievance.Notes.Resolved_Note ? grievance.Notes.Resolved_Note:"No note provided") %></p>
+      </div>
     <% } %>
   </div>
 

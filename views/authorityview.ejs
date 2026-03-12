@@ -117,9 +117,10 @@
       </div>
     </div>
   </div>
-
+<form method="post" action="/authority/<%= (grievance.status === "Under Review"?"MarkProgress":"MarkResolved") %>/<%= grievance.id %>">
   <label class="note-label">Add Internal Note (optional)</label>
   <textarea
+  name="action_note"
     class="internal-note"
     placeholder="Add a note for internal reference..."
     maxlength="500"
@@ -127,13 +128,13 @@
   <div class="char-count">0 / 500</div>
 
   <% if (grievance.status === "Under Review") { %>
-      <button id="MarkProgress/<%= grievance.id %>" class="blue authority-action">✓ Mark as In Progress</button>
+      <button id="MarkProgress" class="blue authority-action">✓ Mark as In Progress</button>
   <% } %>
 
   <% if (grievance.status === "In Progress") { %>
-      <button id="MarkResolved/<%= grievance.id %>" class="green authority-action">✓ Mark as Resolved</button>
+      <button id="MarkResolved" class="green authority-action">✓ Mark as Resolved</button>
   <% } %>
- 
+</form>
 <div class="authorityaction-overlay"></div>
     <div class="authorityaction-warning">
     <div class="authorityaction-header">
@@ -147,9 +148,9 @@
         Once it's marked<strong class="status-text"></strong>, this cannot be reversed.
     </p>
 
-    <form class="authorityaction-form" method="post">
+    <!-- <form class="authorityaction-form" method="post"> -->
         <button class="authorityaction-button"></button>
-    </form>
+    <!-- </form> -->
 </div>
 
   <div class="action-hint">

@@ -27,7 +27,8 @@
     let authorityaction_cancelbtn = document.querySelector(".authorityaction-cancelbtn");
     let authorityaction_warning = document.querySelector(".authorityaction-warning");
     let authorityaction_overlay = document.querySelector(".authorityaction-overlay");
-    let authorityaction_form = document.querySelector(".authorityaction-form");
+    // let authority_action = document.querySelector(".authority-action");
+    // let authorityaction_form = document.querySelector(".authorityaction-form");
     let authorityaction_button = document.querySelector(".authorityaction-button");
     let status_text = document.querySelector(".status-text");
     let assignment_overlay = document.querySelector(".assignment-overlay");
@@ -60,22 +61,46 @@ if(logout_icon){
         logout_warning.style.display = "none";
     });
 }
+let selectedform = null;
 
-    if(authority_action){
-        authority_action.addEventListener("click",() => {
-        authorityaction_overlay.style.display = "block";
-        authorityaction_warning.style.display = "block";
-        let id = authority_action.getAttribute("id");
-        authorityaction_button.innerText = (id.includes("MarkProgress")?"Yes, Mark as InProgress":"Yes, Mark as Resolved");
-        status_text.innerText = (id.includes("MarkProgress")?"InProgress":"Resolved");
-        authorityaction_button.style.backgroundColor = (id.includes("MarkProgress")?"#2563eb":"#16a34a");
-        authorityaction_form.setAttribute("action",`/authority/${id}`);
-    });
+if(authority_action) {
+    authority_action.addEventListener("click",function(e) {
+    e.preventDefault();
+    selectedform = this.closest("form");
+    authorityaction_overlay.style.display = "block";
+    authorityaction_warning.style.display = "block";
     authorityaction_cancelbtn.addEventListener("click",() => {
         authorityaction_overlay.style.display = "none";
         authorityaction_warning.style.display = "none";
     });
+    let id = authority_action.getAttribute("id");
+    authorityaction_button.innerText = (id.includes("MarkProgress")?"Yes, Mark as InProgress":"Yes, Mark as Resolved");
+    authorityaction_button.style.backgroundColor = (id.includes("MarkProgress")?"#2563eb":"#16a34a");
+
+});
+}
+
+if(authorityaction_button) {
+    authorityaction_button.addEventListener("click",() => {
+    if(selectedform) {
+        selectedform.submit();
     }
+});
+}
+
+
+    // if(authority_action){
+    //     authority_action.addEventListener("click",() => {
+    //     authorityaction_overlay.style.display = "block";
+    //     authorityaction_warning.style.display = "block";
+    //     let id = authority_action.getAttribute("id");
+    // authorityaction_button.innerText = (id.includes("MarkProgress")?"Yes, Mark as InProgress":"Yes, Mark as Resolved");
+    //     status_text.innerText = (id.includes("MarkProgress")?"InProgress":"Resolved");
+    //     authorityaction_button.style.backgroundColor = (id.includes("MarkProgress")?"#2563eb":"#16a34a");
+    //     authorityaction_form.setAttribute("action",`/authority/${id}`);
+    // });
+    
+    // }
     if(confirmoverlay_cancelbtn){
          confirmoverlay_cancelbtn.addEventListener("click",() => {
          confirmOverlay.style.display = "none";
