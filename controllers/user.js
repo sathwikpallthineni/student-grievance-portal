@@ -160,7 +160,7 @@ You will be notified once it has been assigned.
 
 This is an automated message. Please do not reply.
 `;
-    if(user.email){
+    if(user && user.email){
      await transporter.sendMail({
         from: process.env.EMAIL_USER,
         to: user.email,
@@ -184,7 +184,7 @@ Details:
 
 Please log in to review and assign the grievance to the appropriate authority.
 `;
-if(admin.email){
+if(admin && admin.email){
      await transporter.sendMail({
         from: process.env.EMAIL_USER,
         to: admin.email,
@@ -192,7 +192,7 @@ if(admin.email){
         text: grievanceCreatedAdminEmail,
 });
 }
-    req.flash("success","Grievance Raised Successfully");
+    req.flash("success","Grievance submitted successfully. Please check your email for confirmation and further updates.");
     res.redirect("/user");
    }catch(err){
     next(err);

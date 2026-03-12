@@ -18,7 +18,7 @@ app.listen(8080,(req,res) => {
     console.log("server started listening");
 });
 
-mongoose.connect("mongodb://127.0.0.1:27017/SMARTGRIEVANCE_TRACKING")
+mongoose.connect(process.env.MONGO_URL)
 .then(() => {
     console.log("successfully connected to DATABASE");
 })
