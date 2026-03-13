@@ -10,12 +10,12 @@ let adminRouter = require("./router/admin");
 let authorityRouter = require("./router/authority");
 const cookieParser = require('cookie-parser');
 
+const PORT = process.env.PORT || 3000;
 
 
 
-
-app.listen(8080,(req,res) => {
-    console.log("server started listening");
+app.listen(PORT,(req,res) => {
+    console.log(`server running on port ${PORT}`);
 });
 
 mongoose.connect(process.env.MONGO_URL)
@@ -45,7 +45,9 @@ app.use((req,res,next) => {
 app.use("/user",userRouter);
 app.use("/admin",adminRouter);
 app.use("/authority",authorityRouter);
-
+app.get("/",(req,res) => {
+    res.redirect("/user/login");
+})
 
 
 
