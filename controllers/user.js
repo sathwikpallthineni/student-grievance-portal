@@ -130,6 +130,7 @@ module.exports.userNewPage = async(req,res,next) => {
     if( user.status != "Active") {
         return res.status(403).send("User is Blocked cannot create new Grievances");
     }
+    let admin = await Tracking.findOne({role:"admin"});
 
     let grievance = new Grievance({
         ...req.body,
@@ -142,9 +143,6 @@ module.exports.userNewPage = async(req,res,next) => {
     user.grievances.push(grievance);
     await grievance.save();
     await user.save();
-
-     req.flash("success","Grievance submitted successfully. Please check your email for confirmation and further updates.");
-    res.redirect("/user");
 
     const grievanceCreatedUserEmail = `
 Your grievance has been successfully submitted.
@@ -166,17 +164,6 @@ You will be notified once it has been assigned.
 This is an automated message. Please do not reply.
 `;
 
-if (user && user.email) {
-  transporter.sendMail({
-    from: process.env.EMAIL_USER,
-    to: user.email,
-    subject: `Grievance Submitted – ${grievance._id}`,
-    text: grievanceCreatedUserEmail,
-  }).catch(err => {
-    console.log("Email failed:", err.message);
-  });
-}
-let admin = await Tracking.findOne({role:"admin"});
 const grievanceCreatedAdminEmail = `
 A new grievance has been submitted and requires assignment.
 
@@ -193,7 +180,21 @@ Details:
 Please log in to review and assign the grievance to the appropriate authority.
 `;
 
-res.redirect("/user");
+
+    req.flash("success","Grievance submitted successfully. Please check your email for confirmation and further updates.");
+    res.redirect("/user");
+
+    
+
+if (user && user.email) {
+  transporter.sendMail({
+    from: process.env.EMAIL_USER,
+    to: user.email,
+    subject: `Grievance Submitted – ${grievance._id}`,
+    text: grievanceCreatedUserEmail,
+  }).then(info => console.log("User email sent:", info.response))
+  .catch(err => console.log("User email error:", err.message));
+}
 
 if (admin && admin.email) {
   transporter.sendMail({
@@ -201,9 +202,8 @@ if (admin && admin.email) {
     to: admin.email,
     subject: `New Grievance Submitted – ID #${grievance._id}`,
     text: grievanceCreatedAdminEmail
-  }).catch(err => {
-    console.log("Email failed:", err.message);
-  });
+  }).then(info => console.log("admin email sent:", info.response))
+  .catch(err => console.log("admin email error:", err.message))
 }
 }catch(err){
     next(err);
