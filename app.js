@@ -19,6 +19,7 @@ app.listen(PORT,(req,res) => {
 });
 
 mongoose.connect(process.env.MONGO_URL)
+// mongoose.connect("mongodb://127.0.0.1:27017/SMARTGRIEVANCE_TRACKING")
 .then(() => {
     console.log("successfully connected to DATABASE");
 })
@@ -54,6 +55,5 @@ app.get("/",(req,res) => {
 
 app.use((err,req,res,next) => {
     let {status=500,message="some error"} = err;
-    res.render("errorhandling.ejs",{message});
-    // res.status(status).send(message);
+    res.render("errorhandling.ejs",{message,title:"Error | Grievance Portal"});
 });

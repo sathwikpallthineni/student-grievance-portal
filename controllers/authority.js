@@ -52,7 +52,7 @@ module.exports.authorityHomePage = async(req,res,next) => {
         });
         grievances.push(...a);
     }
-    res.render("authority.ejs",{grievances,authority,datas});
+    res.render("authority.ejs",{grievances,authority,datas,title:"Authority Dashboard | Grievance Portal"});
    }catch(err){
     next(err);
    }
@@ -178,7 +178,7 @@ module.exports.authorityViewPage = async(req,res,next) => {
     }
     let authority = await Tracking.findOne({username:grievance.assigned_To});
     let grievanceHistories = grievance.history;
-    res.render("authorityview.ejs",{grievance,grievanceHistories,authority});
+    res.render("authorityview.ejs",{grievance,grievanceHistories,authority,title:"Review Grievance | Authority Panel"});
    }catch(err){
     next(err);
    }

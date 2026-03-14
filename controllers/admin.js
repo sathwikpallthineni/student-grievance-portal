@@ -2,6 +2,7 @@ const Tracking = require("../models/Main");
 const Grievance = require("../models/grievance");
 const mongoose = require("mongoose");
 const transporter = require("../utils/email");
+const { title } = require("process");
 
 
 module.exports.adminAtRiskDataFetch = async(req,res,next) => {
@@ -58,7 +59,7 @@ module.exports.adminHomePage = async(req,res,next) => {
     let grievancesUnassigned = a;
     let grievancesInprogress = b;
     let grievancesResolved = c;
-    res.render("admin.ejs",{grievances,user,grievancesUnassigned,grievancesInprogress,grievancesResolved,onTrack,atRisk,breached});
+    res.render("admin.ejs",{grievances,user,grievancesUnassigned,grievancesInprogress,grievancesResolved,onTrack,atRisk,breached,title:"Admin Dashboard | Grievance Portal"});
 
     }catch(err){
         next(err);
@@ -92,7 +93,7 @@ module.exports.adminAuthorityPage = async(req,res,next) => {
     if(!authorities) {
        return res.status(404).send("Authorities not found");
     }
-    res.render("authorities.ejs",{authorities});
+    res.render("authorities.ejs",{authorities,title:"Authority Management | Admin Panel"});
     }catch(err){
         next(err);
     }
@@ -101,7 +102,7 @@ module.exports.adminAuthorityPage = async(req,res,next) => {
 
 module.exports.adminNewAuthorityPage = (req,res,next) => {
     try{
-        res.render("newAuthority.ejs");
+        res.render("newAuthority.ejs",{title:"Create Authority | Admin Panel"});
     }catch(err){
         next(err);
     }
@@ -149,7 +150,7 @@ module.exports.adminAssignmentPage = async(req,res,next) => {
     if(!authorities) {
        return res.status(404).send("authorities not found");
     }
-    res.render("assignment.ejs",{authorities});
+    res.render("assignment.ejs",{authorities,title:"Unassigned Grievances | Admin Panel"});
     }catch(err){
         next(err);
     }
@@ -182,7 +183,7 @@ module.exports.adminReassignPage = async(req,res,next) => {
     if(!authorities) {
        return res.status(404).send("authorities not found");
     }
-   res.render("reassign.ejs",{authorities});
+   res.render("reassign.ejs",{authorities,title:"SLA Breached Grievances | Admin Panel"});
     }catch(err){
         next(err);
     }
@@ -253,7 +254,7 @@ module.exports.adminAllGrievancesPage = async(req,res,next) => {
     let grievancesInprogress = b;
     let grievancesResolved = c;
     
-    res.render("Allgrievances.ejs",{grievances,grievancesUnassigned,grievancesInprogress,grievancesResolved});
+    res.render("Allgrievances.ejs",{grievances,grievancesUnassigned,grievancesInprogress,grievancesResolved,title:"All Grievances | Admin Panel"});
     }catch(err){
         next(err);
     }
@@ -283,7 +284,7 @@ module.exports.adminUsersPage = async(req,res,next) => {
         let users = await Tracking.find({role:"user"});
     let grievances = await Grievance.find();
     let openGrievances = 0;
-    res.render("allUsers.ejs",{users,grievances,openGrievances});
+    res.render("allUsers.ejs",{users,grievances,openGrievances,title:"User Management | Admin Panel"});
     }catch(err){
         next(err);
     }

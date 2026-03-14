@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const upload = multer({ storage });
 const jwt = require('jsonwebtoken');
 const transporter = require("../utils/email");
+const { title } = require("process");
 
 
  async function tokenGeneration(user,req,res,next) {
@@ -95,7 +96,7 @@ module.exports.userHomePage = async(req,res,next) => {
         }
     }
     res.locals.username = user.username;
-    res.render("user.ejs",{grievances,user,datas});
+    res.render("user.ejs",{grievances,user,datas,title:"My Grievances | Grievance Portal"});
     }catch(err){
         next(err);
     }
@@ -108,7 +109,7 @@ module.exports.userRenderNewPage = async(req,res,next) => {
     if(user.status != "Active") {
         return res.status(403).send("User is Blocked please contact ADMIN");
     }
-    res.render("newgrievance.ejs");
+    res.render("newgrievance.ejs",{title:"Raise Grievance | Grievance Portal"});
     }catch(err) {
         next(err);
     }
@@ -212,7 +213,7 @@ module.exports.userViewPage = async(req,res,next) => {
     }
     let grievanceHistories = grievance.history;
    
-    res.render("viewgrievance.ejs",{grievance,grievanceHistories});
+    res.render("viewgrievance.ejs",{grievance,grievanceHistories,title:"Grievance Details | Grievance Portal"});
    }catch(err){
     next(err);
    }
@@ -221,7 +222,7 @@ module.exports.userViewPage = async(req,res,next) => {
 
 module.exports.renderSignup = (req,res,next) => {
     try{
-        res.render("signup.ejs");
+        res.render("signup.ejs",{title:"Sign Up | Grievance Portal"});
    }catch(err){
     next(err);
    }
@@ -230,7 +231,7 @@ module.exports.renderSignup = (req,res,next) => {
 
 module.exports.renderLogin = (req,res,next) => {
     try{
-        res.render("login.ejs");
+        res.render("login.ejs",{title:"Login | Grievance Portal"});
    }catch(err){
     next(err);
    }
