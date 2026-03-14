@@ -142,6 +142,10 @@ module.exports.userNewPage = async(req,res,next) => {
     user.grievances.push(grievance);
     await grievance.save();
     await user.save();
+
+     req.flash("success","Grievance submitted successfully. Please check your email for confirmation and further updates.");
+    res.redirect("/user");
+
     const grievanceCreatedUserEmail = `
 Your grievance has been successfully submitted.
 
@@ -161,13 +165,16 @@ You will be notified once it has been assigned.
 
 This is an automated message. Please do not reply.
 `;
-    if(user && user.email){
-     await transporter.sendMail({
-        from: process.env.EMAIL_USER,
-        to: user.email,
-        subject: `Grievance Submitted Successfully – ID #${grievance._id}`,
-        text: grievanceCreatedUserEmail,
-});
+
+if (user && user.email) {
+  transporter.sendMail({
+    from: process.env.EMAIL_USER,
+    to: user.email,
+    subject: `Grievance Submitted – ${grievance._id}`,
+    text: grievanceCreatedUserEmail,
+  }).catch(err => {
+    console.log("Email failed:", err.message);
+  });
 }
 let admin = await Tracking.findOne({role:"admin"});
 const grievanceCreatedAdminEmail = `
@@ -185,17 +192,20 @@ Details:
 
 Please log in to review and assign the grievance to the appropriate authority.
 `;
-if(admin && admin.email){
-     await transporter.sendMail({
-        from: process.env.EMAIL_USER,
-        to: admin.email,
-        subject: `New Grievance Submitted – ID #${grievance._id}`,
-        text: grievanceCreatedAdminEmail,
-});
+
+res.redirect("/user");
+
+if (admin && admin.email) {
+  transporter.sendMail({
+    from: process.env.EMAIL_USER,
+    to: admin.email,
+    subject: `New Grievance Submitted – ID #${grievance._id}`,
+    text: grievanceCreatedAdminEmail
+  }).catch(err => {
+    console.log("Email failed:", err.message);
+  });
 }
-    req.flash("success","Grievance submitted successfully. Please check your email for confirmation and further updates.");
-    res.redirect("/user");
-   }catch(err){
+}catch(err){
     next(err);
    }
     
