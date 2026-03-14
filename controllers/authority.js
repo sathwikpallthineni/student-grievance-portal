@@ -128,7 +128,8 @@ This is an automated message. Please do not reply.
 
          grievance.Notes.Resolved_Note = action_note;
 
-        subject = `Grievance Resolved – ID #${grievance._id}`
+        subject = `Grievance Resolved – ID #${grievance._id}`;
+
         Email = `
 Your grievance has been marked as resolved.
 
@@ -150,13 +151,18 @@ This is an automated message. Please do not reply.
 
     await grievance.save();
     console.log(grievance);
-    if(User.email){
+
+    if(User && User.email){
+
      await transporter.sendMail({
         from: process.env.EMAIL_USER,
         to: User.email,
         subject: subject,
         text: Email,
-    });
+    })
+    .then(info => console.log("User email sent:", info.response))
+  .catch(err => console.log("User email error:", err.message));
+
 }
 req.flash("success",`Marked as ${grievance.status}`);
   res.redirect(`/authority/${id}`);

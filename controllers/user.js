@@ -181,11 +181,6 @@ Please log in to review and assign the grievance to the appropriate authority.
 `;
 
 
-    req.flash("success","Grievance submitted successfully. Please check your email for confirmation and further updates.");
-    res.redirect("/user");
-
-    console.log("reached after redirecting");
-
 if (user && user.email) {
   transporter.sendMail({
     from: process.env.EMAIL_USER,
@@ -205,6 +200,9 @@ if (admin && admin.email) {
   }).then(info => console.log("admin email sent:", info.response))
   .catch(err => console.log("admin email error:", err.message))
 }
+
+ req.flash("success","Grievance submitted successfully. Please check your email for confirmation and further updates.");
+    res.redirect("/user");
 }catch(err){
     next(err);
    }

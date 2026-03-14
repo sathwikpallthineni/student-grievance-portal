@@ -295,6 +295,9 @@ module.exports.adminUserBlock = async(req,res,next) => {
     try{
         let {id} = req.params;
     let person = await Tracking.findById(id).populate("grievances");
+    if(person){
+        return res.send("User not Found");
+    }
     if(person.role === "user"){
         await Tracking.findOneAndUpdate({username:person.username},{$set:{status:"Blocked"}});
         const userBlockEmail = `
@@ -312,13 +315,17 @@ This is an automated message. Please do not reply.
         to:person.email,
         subject:'Account Temporarily Restricted',
         text:userBlockEmail,
-    });
+    })
+    .then(info => console.log("User email sent:", info.response))
+    .catch(err => console.log("User email error:", err.message));
+
     }
     
-    res.redirect("/admin/users");
+   return res.redirect("/admin/users");
     }
 
     if(person.role === "Authority"){
+
         await Tracking.findOneAndUpdate({username:person.username},{$unset:{grievances:""},$set:{status:"Blocked"}});
         await Grievance.updateMany({assigned_To:person.username,status:{$ne:"Resolved"}},{$unset:{assigned_To:"",duedate:""},$set:{status:"Submitted"}});
 
@@ -336,10 +343,12 @@ This is an automated message. Please do not reply.
         to:person.email,
         subject:'Account Temporarily Restricted',
         text:authBlockEmail,
-    });
+    })
+    .then(info => console.log("User email sent:", info.response))
+    .catch(err => console.log("User email error:", err.message));
     }
         
-    res.redirect("/admin/authority");
+   return res.redirect("/admin/authority");
     }  
     }catch(err){
         next(err);
@@ -347,7 +356,7 @@ This is an automated message. Please do not reply.
     
 }
 
-
+ 
 module.exports.adminUserUnblock = async(req,res,next) => {
     try{
         let {id} = req.params;
@@ -375,7 +384,10 @@ This is an automated message. Please do not reply.
         to:person.email,
         subject:'Account Access Restored',
         text:personUnblockEmail, 
-    });
+    })
+    .then(info => console.log("User email sent:", info.response))
+  .catch(err => console.log("User email error:", err.message));
+
     }
     if(person.role === "user"){
         res.redirect("/admin/users");
@@ -464,13 +476,16 @@ You can track updates by logging into the portal.
 
 This is an automated message. Please do not reply.
 `;
-    if(User.email){
+    if(User && User.email){
         await transporter.sendMail({
         from:process.env.EMAIL_USER,
         to:User.email,
         subject:`Your Grievance Has Been Reassigned – ID #${grievance._id}`,
         text:userReassignEmail,
-    });
+    })
+    .then(info => console.log("User email sent:", info.response))
+  .catch(err => console.log("User email error:", err.message));
+
     }
     
     if(auth.email){
@@ -479,7 +494,10 @@ This is an automated message. Please do not reply.
         to:auth.email,
         subject:`Grievance Reassigned – ID #${grievance._id}`,
         text:authReassignEmail,
-    });
+    })
+    .then(info => console.log("User email sent:", info.response))
+  .catch(err => console.log("User email error:", err.message));
+
     }
     
     if(previousAuthority && previousAuthority.email){
@@ -504,7 +522,10 @@ This is an automated message. Please do not reply.
         to:previousAuthority.email,
         subject:'Grievance Reassigned – ID #${grievance._id}',
         text:previousAuthEmail,
-    });
+    })
+    .then(info => console.log("User email sent:", info.response))
+  .catch(err => console.log("User email error:", err.message));
+
     }
     
     res.redirect("/admin/reassign");
@@ -533,6 +554,9 @@ module.exports.adminAssigningGrievance = async(req,res,next) => {
     auth.grievances.push(grievance);
 
     let User = await Tracking.findOne({role:"user" , username:grievance.raised_By});
+    if(!User) {
+        return res.status(404).send("grievance not found");
+    }
     grievance.assigned_To = authority;
     grievance.status = "Under Review";
     grievance.history.push({status:"Under Review",done_By:authority});
@@ -601,7 +625,10 @@ if(User.email){
         to: User.email,
         subject: "Your Grievance Has Been Assigned",
         text: userEmail,
-});
+})
+.then(info => console.log("User email sent:", info.response))
+.catch(err => console.log("User email error:", err.message));
+
 }
 if(auth.email){
 await transporter.sendMail({
@@ -609,7 +636,10 @@ await transporter.sendMail({
         to: auth.email,
         subject: `New Grievance Assigned – ID #${grievance._id}`,
         text: authEmail,
-});
+})
+.then(info => console.log("User email sent:", info.response))
+.catch(err => console.log("User email error:", err.message));
+
 }
     res.redirect("/admin/assign");
     }catch(err){
