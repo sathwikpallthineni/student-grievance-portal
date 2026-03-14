@@ -154,7 +154,7 @@ This is an automated message. Please do not reply.
 
     if(User && User.email){
 
-     await transporter.sendMail({
+      transporter.sendMail({
         from: process.env.EMAIL_USER,
         to: User.email,
         subject: subject,

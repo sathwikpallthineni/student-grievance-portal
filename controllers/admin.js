@@ -310,7 +310,7 @@ If you believe this action was taken in error, please contact support.
 This is an automated message. Please do not reply.
 `;
         if(person.email){
-        await transporter.sendMail({
+         transporter.sendMail({
         from:process.env.EMAIL_USER,
         to:person.email,
         subject:'Account Temporarily Restricted',
@@ -338,7 +338,7 @@ If you believe this action was taken in error, please contact support.
 This is an automated message. Please do not reply.
 `;
     if(person.email){
-        await transporter.sendMail({
+         transporter.sendMail({
         from:process.env.EMAIL_USER,
         to:person.email,
         subject:'Account Temporarily Restricted',
@@ -379,7 +379,7 @@ If you experience any issues, please contact support.
 This is an automated message. Please do not reply.
 `;
     if(person.email) {
-         await transporter.sendMail({
+          transporter.sendMail({
         from:process.env.EMAIL_USER,
         to:person.email,
         subject:'Account Access Restored',
@@ -477,7 +477,7 @@ You can track updates by logging into the portal.
 This is an automated message. Please do not reply.
 `;
     if(User && User.email){
-        await transporter.sendMail({
+         transporter.sendMail({
         from:process.env.EMAIL_USER,
         to:User.email,
         subject:`Your Grievance Has Been Reassigned – ID #${grievance._id}`,
@@ -489,7 +489,7 @@ This is an automated message. Please do not reply.
     }
     
     if(auth.email){
-        await transporter.sendMail({
+         transporter.sendMail({
         from:process.env.EMAIL_USER,
         to:auth.email,
         subject:`Grievance Reassigned – ID #${grievance._id}`,
@@ -517,7 +517,7 @@ If you have already made updates, they remain recorded in the system.
 This is an automated message. Please do not reply.
 `;
 
-        await transporter.sendMail({
+         transporter.sendMail({
         from:process.env.EMAIL_USER,
         to:previousAuthority.email,
         subject:'Grievance Reassigned – ID #${grievance._id}',
@@ -620,7 +620,7 @@ You can track updates by logging into the portal.
 This is an automated message. Please do not reply.`
 
 if(User.email){
-     await transporter.sendMail({
+      transporter.sendMail({
         from: process.env.EMAIL_USER,
         to: User.email,
         subject: "Your Grievance Has Been Assigned",
@@ -631,7 +631,7 @@ if(User.email){
 
 }
 if(auth.email){
-await transporter.sendMail({
+ transporter.sendMail({
         from: process.env.EMAIL_USER,
         to: auth.email,
         subject: `New Grievance Assigned – ID #${grievance._id}`,
