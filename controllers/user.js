@@ -135,7 +135,7 @@ module.exports.userNewPage = async(req,res,next) => {
         ...req.body,
         raised_By:user.username,
         status:"Submitted",
-        file_Url:req.file.path,
+        file_Url: req.file? req.file.path:null,
     });
 
     grievance.history.push({status:"Submitted",done_By:user.username,});
