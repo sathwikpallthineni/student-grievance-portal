@@ -10,7 +10,7 @@ let adminRouter = require("./router/admin");
 let authorityRouter = require("./router/authority");
 const cookieParser = require('cookie-parser');
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 3000;
 
 
 
@@ -18,8 +18,8 @@ app.listen(PORT,(req,res) => {
     console.log(`server running on port ${PORT}`);
 });
 
-// mongoose.connect(process.env.MONGO_URL)
-mongoose.connect("mongodb://127.0.0.1:27017/SMARTGRIEVANCE_TRACKING")
+mongoose.connect(process.env.MONGO_URL)
+// mongoose.connect("mongodb://127.0.0.1:27017/SMARTGRIEVANCE_TRACKING")
 .then(() => {
     console.log("successfully connected to DATABASE");
 })
