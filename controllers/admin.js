@@ -295,7 +295,7 @@ module.exports.adminUserBlock = async(req,res,next) => {
     try{
         let {id} = req.params;
     let person = await Tracking.findById(id).populate("grievances");
-    if(person){
+    if(!person){
         return res.send("User not Found");
     }
     if(person.role === "user"){
